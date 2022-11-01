@@ -1,30 +1,24 @@
 import os
 import shop
+import game
 
 def show_menu():
     """
     показывает гавноеменю
     из него взывается функция начала
     из него завершается
-
-
-
     """
     while True:
         os.system("cls")
         print("1 - начать новую игру")
-        print("2 -  выйти")
-        answer = input("Введите номер ответа и нажмите ENTER")
+        print("0 -  выйти")
+        answer = input("Введите номер ответа и нажмите ENTER: ")
         if answer == "1":
-            start_game()
+            game.start_game()
             break
-        elif answer == "2":
+        elif answer == "0":
             print("Выходим из игры")
             break
-
-
-    print("пока")
-
 
 def start_game():
     """
@@ -38,7 +32,6 @@ def start_game():
     имя
     запускает игру
     игра контролируется переменной is_game
-
     """
 
     player_name = input("Введите имя ")
