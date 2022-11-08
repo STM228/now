@@ -1,31 +1,46 @@
 import os
 import shop
 
-def start_game():
-    os.system("cls")
 
-while True:
-    os.system("cls")
+def start_game():
+    """
+    создает персонажа:
+        player_name - имя игрока
+        player_money -  деньги игрока
+        player_hp - жизни игрока,>
+        player_xp - опыт игрока
+        player_potions - зелья которые что то дают
+    деньги
+    имя
+    запускает игру
+    игра контролируется переменной is_game
+    """
 
     player_name = input("Введите имя ")
-    player_money = 100
+    player_money = 50
     player_hp = 100
-    player_xp = 50
-    player_potions = 1
+    player_xp = 0
+    player_potions = 0
+    player = (player_name, player_hp, player_money, player_potions)
 
-    print("игра началась")
-    print("Персонаж:")
-    print(player_name)
-    print(player_money, "денег")
-    print(player_hp, "жизней")
-    print(player_potions, "зелей")
+    is_game = True
+    while is_game:
+        os.system("cls")
+        print(f"имя: {player[0]}")
+        print(f"деньги: {player[1]}")
+        print(f"здоровье: {player[2]}")
+        print(f"зелья: {player[3]}")
 
-    print("1 - поехать в лавку алхимика")
-    print("0 - выйти в главное меню")
-    answer = input("\n Введите номер варианта и нажмите ENTER: ")
-    if answer == "1":
-        shop.show(player_name, player_money, player_hp, player_potions)
+        print(f"{player_name} приехал к камню")
+        print("1 - поехать на битву с разбойниками ")
+        print("2 - роехать играть в кости")
+        print("3 - поехать в лавку алхимика")
 
-
-
-
+        answer = input("Введите номер ответа и нажмите ENTER")
+        if answer == "1":
+            print("поехал на битву")
+        elif answer == "2":
+            print("поехал играть в кости")
+        elif answer == "3":
+            player = shop.show(player)
+        input("Нажмите ENTER чтобы продолжить")
