@@ -1,13 +1,13 @@
 import os
-def show(player):
-    name = player[0]
-    potions = player[3]
-    hp = player[2]
-    money = player[1]
+
+
+def show(player:tuple) -> tuple:
+    name = player[5]
+    money = player[6]
     while True:
 
         os.system("cls")
-        print(f"{name} Приехал в лавку алхимика")
+        print(f"{player[0]} Приехал в лавку алхимика")
         print("Имя персонажа ",name)
         print("Деньги персонажа ",money)
         print("Жизни перснажа ",hp)
@@ -28,5 +28,5 @@ def show(player):
                 print("Недостаточно монет!")
                 input("\nНажмите ENTER чтобы продолжить: ")
         elif answer == "2":
-            return (name, hp, money, potions)
+            return (player[0],player[1], player[2], player[3], money, potions)
         input("\nНажмите ENTER чтобы продолжить: ")

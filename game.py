@@ -1,5 +1,9 @@
 import os
 import shop
+import hero_engine
+
+def make_hero(name="Безымянный", hp=1, money=0, potion=0) -> tuple:
+    return(name, hp, money, potion)
 
 
 def start_game():
@@ -15,13 +19,20 @@ def start_game():
     запускает игру
     игра контролируется переменной is_game
     """
+    player = hero_engine.make_hero()
 
+    # TODO: щтправить в хиро енгин
     player_name = input("Введите имя ")
     player_money = 50
     player_hp = 100
     player_xp = 0
     player_potions = 0
     player = (player_name, player_hp, player_money, player_potions)
+
+    n_player_name = "Ган ган"
+    n_player_money = 50
+    n_player_hp = 100
+    n_player_potions = 0
 
     is_game = True
     while is_game:
@@ -38,7 +49,7 @@ def start_game():
 
         answer = input("Введите номер ответа и нажмите ENTER")
         if answer == "1":
-            print("поехал на битву")
+            print("разбойники")
         elif answer == "2":
             print("поехал играть в кости")
         elif answer == "3":
