@@ -1,4 +1,5 @@
 from random import choice, randint
+import os
 
 
 first_name = ("Жран","Дрын", "Жлыг")
@@ -11,7 +12,7 @@ def make_hero(
         hp_max=None,
         hp_now=None,
         lvl=1,
-        xp_next=1000,
+        xp_next=None,
         xp_now=0,
         attack=1,
         defence=0,
@@ -23,7 +24,10 @@ def make_hero(
 ) -> list:
     if not name:
         name = f"{choice(first_name)} {choice(last_name)}"
+
         hp_max = hp_now
+
+        xp_next = lvl * 1000
 
     if not hp_now:
         hp_now = randint(1, 100)
@@ -33,6 +37,8 @@ def make_hero(
 
     if not inventary:
         inventary = []
+
+
     """
     Герой это список
     [0] name - имя персонажа
@@ -52,30 +58,54 @@ def make_hero(
     """
 
     return [name,
-        hp_max,
-        hp_now,
-        lvl,
-        xp_next,
-        xp_now,
-        attack,
-        defence,
-        weapon,
-        shield,
-        luck,
-        money,
-        inventary
-    ]
+            hp_max,
+            hp_now,
+            lvl,
+            xp_next,
+            xp_now,
+            attack,
+            defence,
+            weapon,
+            shield,
+            luck,
+            money,
+            inventary
+        ]
 
+
+def show_hero(hero: str) -> None:
+    print("Имя:", hero[0])
+    print("жизни:", hero[2], "/", hero[1])
+    print("уровень:", hero[3])
+    print("опыт:", hero[5], "/", hero[4])
+    print("атака:", hero[6])
+    print("защита:", hero[7])
+    print("оружие:", hero[8])
+    print("щит:", hero[9])
+    print("деньги:", hero[10])
+    print("удача:", hero[11])
+    print("инвентарь:", hero[12])
+    print("")
+
+def levelup(hero):
+    if hero[5] >= hero[4]:
+        hero[3] += 1
+        hero[4] = hero[3] * 1000
+        print(f"{hero[0]} получил {hero[3]} уровень\n")
+
+os.system("cls")
 p1 = make_hero()
 p2 = make_hero()
-p3 = make_hero()
+
+show_hero(p1)
+show_hero(p2)
 
 
-def show_hero(hero):
-    pass
+p1[5] += 100
+levelup(p1)
 
+p2[5] += 1000
+levelup(p2)
 
-
-    p1 = make_hero()
-    p2 = make_hero()
-    p3 = make_hero()
+show_hero(p1)
+show_hero(p2)
