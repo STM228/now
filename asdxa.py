@@ -21,6 +21,7 @@ def make_hero(
         luck=1,
         money=None,
         inventary=None,
+
 ) -> list:
     if not name:
         name = f"{choice(first_name)} {choice(last_name)}"
@@ -78,12 +79,13 @@ def show_hero(hero: str) -> None:
     print("жизни:", hero[2], "/", hero[1])
     print("уровень:", hero[3])
     print("опыт:", hero[5], "/", hero[4])
+    print("до следующего уровня нужно:", hero[4])
     print("атака:", hero[6])
     print("защита:", hero[7])
     print("оружие:", hero[8])
     print("щит:", hero[9])
-    print("деньги:", hero[10])
-    print("удача:", hero[11])
+    print("деньги:", hero[11])
+    print("удача:", hero[10])
     print("инвентарь:", hero[12])
     print("")
 
@@ -91,21 +93,43 @@ def levelup(hero):
     if hero[5] >= hero[4]:
         hero[3] += 1
         hero[4] = hero[3] * 1000
-        print(f"{hero[0]} получил {hero[3]} уровень\n")
+        print(f"{hero[0]} получил {hero[3]} уровень, для следующего уровня тебе надо {hero[4]}\n")
+
+
+def buy_item(hero: list, price: int) -> None:
+    """
+    Герой это список
+    [0] name - имя персонажа
+    [11] money - деньги
+    [12] inventary - инвентарь список
+    """
+    if hero[11] >= price:
+        hero[11] -= price
+        hero[12].append("зелье")
+        print(f"{hero[0]} купил зелье за {price} монет")
+    else:
+        print(f"{hero[0]} не хватило {price - hero[11]} монет")
 
 os.system("cls")
 p1 = make_hero()
-p2 = make_hero()
-
 show_hero(p1)
-show_hero(p2)
-
-
-p1[5] += 100
-levelup(p1)
-
-p2[5] += 1000
-levelup(p2)
-
+buy_item(p1, 100)
 show_hero(p1)
-show_hero(p2)
+
+def consume_item(hero: list, idx):
+    """
+    TODO:  ВЫПИТЬ ЗЕЛЬЕ ТАК ЧТОБЫ БЫЛО НЕ БОЛЬШЕ МАКСИМУМА
+
+    """
+    if idx <= len(hero[12]) - 1 and idx > -1:
+        print(f"{hero[0]} употребил {hero[12][idx]}")
+
+        if hero[12][idx] == "зелье":
+            pass
+        elif hero[12][idx] == "яблоко":
+            pass
+        else:
+            pass
+        hero[12].pop(idx)
+    else:
+        print("нет такого")
