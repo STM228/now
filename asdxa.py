@@ -155,5 +155,52 @@ def start_fight(hero: list) -> None:
     итог боя: проигрыш или победа
     победа: добавить опыт от врага, забрать предметы от врага в инвентарь героя
     проигрыш: закончить игру
+    """,
+    enemy = make_hero(name="Гладиатор",xp_now=1000,money=100, inventary=["Меч гладиатора"])
+    while hero[2] > 0 and enemy[2] > 0:
+        os.system("cls")
+        combat_turn(hero, enemy)
+        combat_turn(enemy, hero)
+        print("")
+        show_hero(hero)
+        show_hero(enemy)
+        pause = input("Чтобы продолжить нажмите ENTER")
+    combat_result(hero, enemy)
+
+
+def combat_result(hero, enemy) -> None:
     """
-    pass
+    Результат боя:
+        если победил игрок:
+            забирает опыт, деньги, предметы инвентаря
+
+
+    """
+    if hero[2] > 0 and enemy[2] <= 0:
+        print(f"{hero[0]} победил противника {enemy[0]} и в награду получает: ")
+        hero[5] += enemy[5]
+        print(enemy[5], "опыта")
+        hero[10] += enemy[10]
+        print(enemy[10], "монет")
+        print("И забирает предметы:")
+        for item in enemy[12]:
+            print(item, end=",")
+        print
+        hero[12] += enemy[12]
+        levelup(hero)
+        """
+        [5] xp_now - текущий опыт
+        [11] money - деньги
+        [12] inventary - инвентарь список
+        """
+    if enemy[2] > 0 and hero[2] <= 0:
+        print(f"{enemy[0]} победил противника {hero[0]}")
+
+def combat_turn(attacker: list, defender: list) -> None:
+    """TODO: DND?"""
+    if attacker[2] > 0:
+        damage = attacker[6]
+        defender[2] -= damage
+        print(f"{attacker[0]} ударил {defender[0]} на {damage} здоровья")
+
+
