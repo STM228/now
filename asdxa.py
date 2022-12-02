@@ -102,6 +102,7 @@ def buy_item(hero: list, item, price: int) -> None:
      и если есть отнимает из денег героя price,
      и добавляет в инвентарь героя этот item
     """
+
     if hero[11] >= price:
         hero[11] -= price
         hero[12].append(item)
@@ -156,7 +157,7 @@ def start_fight(hero: list) -> None:
     победа: добавить опыт от врага, забрать предметы от врага в инвентарь героя
     проигрыш: закончить игру
     """,
-    enemy = make_hero(name="Гладиатор",xp_now=1000,money=100, inventary=["Меч гладиатора"])
+    enemy = make_hero(name="Гладиатор",xp_now=30,money=100, inventary=["Меч гладиатора"])
     while hero[2] > 0 and enemy[2] > 0:
         os.system("cls")
         combat_turn(hero, enemy)
@@ -193,8 +194,11 @@ def combat_result(hero, enemy) -> None:
         [11] money - деньги
         [12] inventary - инвентарь список
         """
-    if enemy[2] > 0 and hero[2] <= 0:
+    elif enemy[2] > 0 and hero[2] <= 0:
         print(f"{enemy[0]} победил противника {hero[0]}")
+        print("Игра должна закончится тут")
+    else:
+        print("Ничья")
 
 def combat_turn(attacker: list, defender: list) -> None:
     """TODO: DND?"""
@@ -203,4 +207,57 @@ def combat_turn(attacker: list, defender: list) -> None:
         defender[2] -= damage
         print(f"{attacker[0]} ударил {defender[0]} на {damage} здоровья")
 
+
+
+def choose_option(hero: list, text: str, options: list) -> int:
+    os.system("cls")
+    show_hero()
+    text = "Герой приехал к камню"
+    options = [
+    "Сыграть в кости",
+    "Биться сразбойником",
+    "Купить зелье",
+    "Выпить зелье"
+]
+
+    """
+    покажет описание ситуации
+    показывает вариаты
+    получает ввод пользователя
+    проверяет вввод и возвращает его если он есть в вариантах
+    """
+    print(text)
+    for num, option in enumerate(options):
+        print(f"{num}. {option}")
+    option = input("\nВведите номер варианта и нажмите ENTER: ")
+    try:
+        option = int(option)
+    except:  # выполнится если трай не получится
+        print("Ввод должен быть целым неотрицательным числом")
+    else: # если трай удался
+        if option < len(options) and option > -1:
+            return option
+        else:
+            print("Нет такого выбора")
+
+
+def visit_hub(hero):
+    text = f"{hero[0]} приехал к камню. Отсюда уходят несколько дорог:"
+    options = [
+        "Сыграть в кости на 10 монет",
+        "Биться сразбойником",
+        "Купить зелье",
+        "Употребить 1 предмет из инвентаря"
+    ]
+    option = choose_option(hero, text, options)
+    os.system("cls")
+    if option == 0:
+        play_dise(hero, 10)
+    elif option == 1:
+        start_fight(hero)
+    elif option == 2:
+        buy_item(hero, 10, "зелье")
+    elif option == 3:
+        consume_item(hero, 0)
+    input("\n Нажмите ENTER чтобы продолжить")
 
