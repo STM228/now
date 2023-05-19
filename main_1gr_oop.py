@@ -1,6 +1,7 @@
 import pygame
 import sys
-from random import randint
+from random import randint, choice
+from math import radians, sin, cos
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -30,14 +31,41 @@ class Game:
             is_automatic=True,
         )
         ball = Ball(self.screen_rect)
+        ball.throw_in()
+        score_1 = Score(
+            center=(self.screen_rect.width * 0.25, self.screen_rect.height * 0.05),
+            size=50,
+            score=player_1.score,
+        
+        )
+        score_2 = Score(
+            center=(self.screen_rect.width * 0.75, self.screen_rect.height * 0.05),
+            size=50,
+            score=player_2.score,
+        
+        )
+        ball.direction = 89
         self.paddles = pygame.sprite.Group()
         self.ball = pygame.sprite.Group()
+        self.scores = pygame.sprite.Group()
         self.paddles.add(player_1)
         self.paddles.add(player_2)
         self.ball.add(ball)
+        self.scores.add(score_1)
+        self.scores.add(score_2)
         self.clock = pygame.time.Clock()
         self.main_loop()
-        
+
+    def check_goal(self):
+        if self.ball.sprites()[0].rect.right >= self.screen_rect.right:
+            self.paddles.sprites()[0].score += 1
+            print("счeт 1 тгрока", self.paddles.sprites()[0].score)
+            self.paddles.sprites()[0].throw_in()
+        if self.ball.sprites()[0].rect.left <= self.screen_rect.left:
+            self.paddles.sprites()[1].score += 1
+            print("счeт 1 тгрока", self.paddles.sprites()[0].score)
+            self.paddles.sprites()[0].throw_in()
+
     def main_loop(self):
         game = True
         while game:
@@ -50,9 +78,13 @@ class Game:
                 game = False
 
             self.paddles.update()
+            self.ball.update(self.paddles)
+            self.scores.update()
+            self.check_goal()
             self.screen.fill(BLACK)
             self.paddles.draw(self.screen)
             self.ball.draw(self.screen)
+            self.scores.draw(self.screen)
             pygame.display.flip()
             self.clock.tick(FPS)
         pygame.quit()
@@ -78,7 +110,7 @@ class Paddle(pygame.sprite.Sprite):
         super().__init__()
         self.screen_rect = screen_rect
         if not size:
-            size = (self.screen_rect.width * 0.01, self.screen_rect.height * 0.1)
+            size = (self.screen_rect.width * 0.01, self.screen_rect.height * 0.10)
         self.image = pygame.Surface(size)
         self.image.fill(color)
         self.rect = self.image.get_rect()
@@ -86,6 +118,8 @@ class Paddle(pygame.sprite.Sprite):
         self.speed = speed
         self.keys = keys
         self.is_automatic = is_automatic
+        self.score = 0
+
 
     def update(self):
         if not self.is_automatic:
@@ -99,7 +133,11 @@ class Paddle(pygame.sprite.Sprite):
 
 
 class Ball(pygame.sprite.Sprite):
-    """ мяч """
+    """
+    мяч
+    отскок от бортов (верхнего и нижнего)
+    отскок от ракеток
+    """
     def __init__(
             self,
             screen_rect=None,
@@ -114,17 +152,82 @@ class Ball(pygame.sprite.Sprite):
         super().__init__()
         self.screen_rect = screen_rect
         if not size:
-            size = (self.screen_rect.width * 0.01, self.screen_rect.width * 0.1)
+            size = (self.screen_rect.width * 0.01, self.screen_rect.width * 0.01)
         self.image = pygame.Surface(size)
         self.image.fill(color)
         self.rect = self.image.get_rect()
         if not center:
             self.rect.center = screen_rect.center
+        self.speed = speed
+        self.direction = direction
+        self.vel_x = vel_x
+        self.vel_y = vel_y
 
-        
-class Score:
-    """ табло """
-    pass
+    def update(self, paddles_group):
+        self.move()
+        self.wall_bounce()
+        self.paddles_bounce(paddles_group)
+
+    def move(self):
+        """
+        движение мяча по x и y
+        """
+        self.vel_x = sin(radians(self.direction)) * self.speed
+        self.vel_y = cos(radians(self.direction)) * self.speed * -1
+        self.rect.x += self.vel_x
+        self.rect.y += self.vel_y
+
+    def throw_in(self):
+        """
+        вброс мяча: центрирование и поворот в сторону одни или других ворот
+        """
+        self.rect.center = self.screen_rect.center
+        self.direction = choice((randint(45, 135), randint(225, 315)))
+
+    def wall_bounce(self):
+        """
+        отскок от верхней и нижней границы 
+        """
+        if self.rect.top <= self.screen_rect.top:
+            self.direction *= -1
+            self.direction += 180
+        elif self.rect.bottom >= self.screen_rect.bottom:
+            self.direction *= -1
+            self.direction += 180
+
+    def paddles_bounce(self, paddles_group):
+        """
+        отскок мяча от ракеток
+        """
+        for paddle in paddles_group:
+            if paddle.rect.colliderect(self.rect):
+                self.direction *= -1  
+
+
+class Score(pygame.sprite.Sprite):
+    """ 
+    табло 
+    FIXME:  счут ысех игроков не обновляетсяб остается изначальным
+    """
+    def __init__(
+        self,
+        center=None,
+        size=None,
+        color=WHITE,
+        score=None
+    ):
+        super().__init__()
+        self.font = pygame.font.Font(None, size)
+        self.score = score
+        self.color = color
+        self.image = self.font.render(str(self.score), True, self.color)
+        self.rect = self.image.get_rect()
+        self.rect.center = center
+
+    def update(self) -> None:
+
+        self.image = self.font.render(str(score), True, color)
+
 
 
 game = Game()
